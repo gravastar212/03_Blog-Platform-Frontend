@@ -43,9 +43,10 @@
                   color="primary" 
                   type="submit" 
                   class="full-width"
-                  [disabled]="loginForm.invalid">
-            <mat-icon>login</mat-icon>
-            Sign In
+                  [disabled]="loginForm.invalid || isLoading">
+            <mat-icon *ngIf="!isLoading">login</mat-icon>
+            <mat-icon *ngIf="isLoading" class="spinning">refresh</mat-icon>
+            {{ isLoading ? 'Signing In...' : 'Sign In' }}
           </button>
         </div>
       </form>

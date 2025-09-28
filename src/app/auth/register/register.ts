@@ -5,8 +5,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService, SignupRequest } from '../auth';
 
 @Component({
   selector: 'app-register',
@@ -18,6 +20,7 @@ import { CommonModule } from '@angular/common';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
+    MatSnackBarModule,
     RouterModule
   ],
   templateUrl: './register.html',
@@ -27,8 +30,14 @@ export class Register {
   registerForm: FormGroup;
   hidePassword = true;
   hideConfirmPassword = true;
+  isLoading = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private snackBar: MatSnackBar,
+    private router: Router
+  ) {
     this.registerForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(2)]],
       lastName: ['', [Validators.required, Validators.minLength(2)]],
@@ -56,8 +65,41 @@ export class Register {
 
   onSubmit() {
     if (this.registerForm.valid) {
-      console.log('Register form submitted:', this.registerForm.value);
-      // TODO: Implement registration logic
+      this.isLoading = true;
+      const signupData: SignupRequest = {
+        firstName: this.registerForm.value.firstName,
+        lastName: this.registerForm.value.lastName,
+        email: this.registerForm.value.email,
+        password: this.registerForm.value.password
+      };
+      
+      this.authService.signup(signupData).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          if (response.success) {
+            this.snackBar.open('Registration successful! Please sign in.', 'Close', {
+              duration: 5000,
+              panelClass: ['success-snackbar']
+            });
+            
+            // Redirect to login page
+            this.router.navigate(['/auth/login']);
+          } else {
+            this.snackBar.open(response.message || 'Registration failed', 'Close', {
+              duration: 5000,
+              panelClass: ['error-snackbar']
+            });
+          }
+        },
+        error: (error) => {
+          this.isLoading = false;
+          console.error('Registration error:', error);
+          this.snackBar.open('Registration failed. Please try again.', 'Close', {
+            duration: 5000,
+            panelClass: ['error-snackbar']
+          });
+        }
+      });
     } else {
       this.markFormGroupTouched();
     }

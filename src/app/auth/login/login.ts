@@ -5,8 +5,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService, LoginRequest } from '../auth';
 
 @Component({
   selector: 'app-login',
@@ -18,6 +20,7 @@ import { CommonModule } from '@angular/common';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
+    MatSnackBarModule,
     RouterModule
   ],
   templateUrl: './login.html',
@@ -26,8 +29,14 @@ import { CommonModule } from '@angular/common';
 export class Login {
   loginForm: FormGroup;
   hidePassword = true;
+  isLoading = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private snackBar: MatSnackBar,
+    private router: Router
+  ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
@@ -36,8 +45,44 @@ export class Login {
 
   onSubmit() {
     if (this.loginForm.valid) {
-      console.log('Login form submitted:', this.loginForm.value);
-      // TODO: Implement login logic
+      this.isLoading = true;
+      const loginData: LoginRequest = this.loginForm.value;
+      
+      this.authService.login(loginData).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          if (response.success) {
+            // Store token and user data
+            if (response.token) {
+              this.authService.setToken(response.token);
+            }
+            if (response.user) {
+              this.authService.setUser(response.user);
+            }
+            
+            this.snackBar.open('Login successful!', 'Close', {
+              duration: 3000,
+              panelClass: ['success-snackbar']
+            });
+            
+            // Redirect to home page
+            this.router.navigate(['/']);
+          } else {
+            this.snackBar.open(response.message || 'Login failed', 'Close', {
+              duration: 5000,
+              panelClass: ['error-snackbar']
+            });
+          }
+        },
+        error: (error) => {
+          this.isLoading = false;
+          console.error('Login error:', error);
+          this.snackBar.open('Login failed. Please try again.', 'Close', {
+            duration: 5000,
+            panelClass: ['error-snackbar']
+          });
+        }
+      });
     } else {
       this.markFormGroupTouched();
     }

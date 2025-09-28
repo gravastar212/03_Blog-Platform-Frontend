@@ -88,9 +88,10 @@
                   color="primary" 
                   type="submit" 
                   class="full-width"
-                  [disabled]="registerForm.invalid">
-            <mat-icon>person_add</mat-icon>
-            Create Account
+                  [disabled]="registerForm.invalid || isLoading">
+            <mat-icon *ngIf="!isLoading">person_add</mat-icon>
+            <mat-icon *ngIf="isLoading" class="spinning">refresh</mat-icon>
+            {{ isLoading ? 'Creating Account...' : 'Create Account' }}
           </button>
         </div>
       </form>
