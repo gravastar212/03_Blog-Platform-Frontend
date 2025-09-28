@@ -1,0 +1,66 @@
+<mat-toolbar color="primary" class="navbar">
+  <div class="navbar-content">
+    <!-- Brand/Logo -->
+    <div class="navbar-brand">
+      <mat-icon class="brand-icon">article</mat-icon>
+      <span class="brand-text">BlogHub</span>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="navbar-nav">
+      <a mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <mat-icon>home</mat-icon>
+        Home
+      </a>
+      <a mat-button routerLink="/categories" routerLinkActive="active">
+        <mat-icon>category</mat-icon>
+        Categories
+      </a>
+      <a mat-button routerLink="/about" routerLinkActive="active">
+        <mat-icon>info</mat-icon>
+        About
+      </a>
+      <a mat-button routerLink="/contact" routerLinkActive="active">
+        <mat-icon>contact_mail</mat-icon>
+        Contact
+      </a>
+    </nav>
+
+    <!-- Spacer to push actions to the right -->
+    <span class="spacer"></span>
+
+    <!-- User Actions -->
+    <div class="navbar-actions">
+      <button mat-button [matMenuTriggerFor]="userMenu">
+        <mat-icon>account_circle</mat-icon>
+        Account
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item>
+          <mat-icon>person</mat-icon>
+          Profile
+        </button>
+        <button mat-menu-item>
+          <mat-icon>settings</mat-icon>
+          Settings
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item>
+          <mat-icon>login</mat-icon>
+          Sign In
+        </button>
+        <button mat-menu-item>
+          <mat-icon>person_add</mat-icon>
+          Sign Up
+        </button>
+      </mat-menu>
+
+      <button mat-raised-button color="accent" class="write-btn">
+        <mat-icon>edit</mat-icon>
+        Write Post
+      </button>
+    </div>
+  </div>
+</mat-toolbar>

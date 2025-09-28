@@ -1,0 +1,100 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 32px;
+  cursor: pointer;
+  
+  .brand-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+  
+  .brand-text {
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+  }
+}
+
+.navbar-nav {
+  display: flex;
+  gap: 8px;
+  
+  a {
+    color: white;
+    text-decoration: none;
+    
+    &.active {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    mat-icon {
+      margin-right: 4px;
+    }
+  }
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  
+  .write-btn {
+    margin-left: 8px;
+  }
+}
+
+// Mobile responsive
+@media (max-width: 768px) {
+  .navbar-content {
+    padding: 0 8px;
+  }
+  
+  .navbar-brand {
+    margin-right: 16px;
+    
+    .brand-text {
+      font-size: 18px;
+    }
+  }
+  
+  .navbar-nav {
+    display: none; // Hide nav links on mobile for now
+  }
+  
+  .navbar-actions {
+    .write-btn {
+      display: none; // Hide write button on mobile for now
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-brand {
+    .brand-text {
+      display: none; // Hide text on very small screens
+    }
+  }
+}
