@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
+import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-navbar',
@@ -13,7 +15,8 @@ import { MatMenuModule } from '@angular/material/menu';
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
-    MatMenuModule
+    MatMenuModule,
+    MatDividerModule
   ],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss'
@@ -33,4 +36,29 @@ export class Navbar {
     { label: 'Dashboard', route: '/admin', icon: 'dashboard' },
     { label: 'New Post', route: '/admin/editor', icon: 'add_circle' },
   ];
+
+  constructor(
+    public authService: Auth,
+    private router: Router
+  ) {}
+
+  logout() {
+    this.authService.logout();
+  }
+
+  get currentUser() {
+    return this.authService.currentUser();
+  }
+
+  get isAuthenticated() {
+    return this.authService.isAuthenticated();
+  }
+
+  get isAdmin() {
+    return this.authService.isAdmin();
+  }
+
+  get isAuthor() {
+    return this.authService.hasRole('author') || this.authService.hasRole('admin');
+  }
 }

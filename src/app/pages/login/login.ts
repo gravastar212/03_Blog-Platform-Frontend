@@ -8,6 +8,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +22,8 @@ import { MatDividerModule } from '@angular/material/divider';
     MatButtonModule,
     MatIconModule,
     MatCheckboxModule,
-    MatDividerModule
+    MatDividerModule,
+    MatSnackBarModule
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss'
@@ -31,22 +34,45 @@ export class Login {
   rememberMe = signal(false);
   hidePassword = signal(true);
   loading = signal(false);
+  error = signal('');
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: Auth,
+    private snackBar: MatSnackBar
+  ) {}
 
   onSubmit() {
     if (!this.email() || !this.password()) {
-      alert('Please fill in all fields');
+      this.error.set('Please fill in all fields');
       return;
     }
 
     this.loading.set(true);
+    this.error.set('');
     
-    // Simulate login - replace with actual authentication service
-    setTimeout(() => {
-      this.loading.set(false);
-      alert('Login successful! (Demo only)');
-      this.router.navigate(['/']);
-    }, 1000);
+    this.authService.login({
+      email: this.email(),
+      password: this.password()
+    }).subscribe({
+      next: (response) => {
+        this.loading.set(false);
+        this.snackBar.open(`Welcome back, ${response.user.name}!`, 'Close', {
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top'
+        });
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        this.loading.set(false);
+        this.error.set(err.message || 'Login failed. Please check your credentials.');
+        this.snackBar.open('Login failed. Please check your credentials.', 'Close', {
+          duration: 5000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top'
+        });
+      }
+    });
   }
 }

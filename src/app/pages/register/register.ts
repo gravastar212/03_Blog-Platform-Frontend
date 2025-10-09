@@ -8,6 +8,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-register',
@@ -20,7 +22,8 @@ import { MatDividerModule } from '@angular/material/divider';
     MatButtonModule,
     MatIconModule,
     MatCheckboxModule,
-    MatDividerModule
+    MatDividerModule,
+    MatSnackBarModule
   ],
   templateUrl: './register.html',
   styleUrl: './register.scss'
@@ -35,31 +38,52 @@ export class Register {
   hideConfirmPassword = signal(true);
   loading = signal(false);
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: Auth,
+    private snackBar: MatSnackBar
+  ) {}
 
   onSubmit() {
     if (!this.name() || !this.email() || !this.password() || !this.confirmPassword()) {
-      alert('Please fill in all fields');
+      this.snackBar.open('Please fill in all fields', 'Close', { duration: 3000 });
       return;
     }
 
     if (this.password() !== this.confirmPassword()) {
-      alert('Passwords do not match');
+      this.snackBar.open('Passwords do not match', 'Close', { duration: 3000 });
       return;
     }
 
     if (!this.agreeToTerms()) {
-      alert('Please agree to the terms and conditions');
+      this.snackBar.open('Please agree to the terms and conditions', 'Close', { duration: 3000 });
       return;
     }
 
     this.loading.set(true);
     
-    // Simulate registration - replace with actual authentication service
-    setTimeout(() => {
-      this.loading.set(false);
-      alert('Registration successful! (Demo only)');
-      this.router.navigate(['/login']);
-    }, 1000);
+    this.authService.register({
+      name: this.name(),
+      email: this.email(),
+      password: this.password()
+    }).subscribe({
+      next: (response) => {
+        this.loading.set(false);
+        this.snackBar.open(`Welcome, ${response.user.name}! Please login.`, 'Close', {
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top'
+        });
+        this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        this.loading.set(false);
+        this.snackBar.open(err.message || 'Registration failed. Please try again.', 'Close', {
+          duration: 5000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top'
+        });
+      }
+    });
   }
 }

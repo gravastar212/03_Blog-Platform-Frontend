@@ -7,7 +7,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BlogCard } from '../../components/blog-card/blog-card';
-import { Blog } from '../../services/blog';
+import { BlogHttp } from '../../services/blog-http';
 import { BlogPost } from '../../models/blog-post';
 
 @Component({
@@ -33,7 +33,7 @@ export class BlogList implements OnInit {
   selectedCategory = signal('all');
   categories = signal<string[]>([]);
 
-  constructor(private blogService: Blog) {}
+  constructor(private blogService: BlogHttp) {}
 
   ngOnInit() {
     this.loadPosts();
@@ -56,7 +56,11 @@ export class BlogList implements OnInit {
   }
 
   loadCategories() {
-    this.categories.set(['all', ...this.blogService.getCategories()]);
+    this.blogService.getCategories().subscribe({
+      next: (cats) => {
+        this.categories.set(['all', ...cats]);
+      }
+    });
   }
 
   onSearchChange(query: string) {

@@ -10,8 +10,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(Auth);
   const token = authService.getToken();
 
-  // Skip token injection for auth endpoints or when using mock data
-  if (environment.useMockData || req.url.includes('/auth/login') || req.url.includes('/auth/register')) {
+  // Skip token injection for auth endpoints
+  if (req.url.includes('/auth/login') || req.url.includes('/auth/register')) {
     return next(req);
   }
 

@@ -36,9 +36,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
           case 401:
             errorMessage = 'Unauthorized. Please log in again.';
             // Clear auth data and redirect to login
-            authService.logout().subscribe(() => {
-              router.navigate(['/login']);
-            });
+            authService.logout();
             break;
           case 403:
             errorMessage = 'Access forbidden. You don\'t have permission.';

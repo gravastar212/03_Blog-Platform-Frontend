@@ -10,7 +10,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule, MatChipInputEvent } from '@angular/material/chips';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Blog } from '../../services/blog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { BlogHttp } from '../../services/blog-http';
 import { BlogPost } from '../../models/blog-post';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
@@ -26,7 +27,8 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
     MatSelectModule,
     MatChipsModule,
     MatSlideToggleModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSnackBarModule
   ],
   templateUrl: './blog-editor.html',
   styleUrl: './blog-editor.scss'
@@ -54,11 +56,17 @@ export class BlogEditor implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private blogService: Blog
+    private blogService: BlogHttp,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
-    this.categories.set(this.blogService.getCategories());
+    // Load categories from backend
+    this.blogService.getCategories().subscribe({
+      next: (cats) => {
+        this.categories.set(cats);
+      }
+    });
     
     this.route.params.subscribe(params => {
       const id = params['id'];
@@ -147,24 +155,40 @@ export class BlogEditor implements OnInit {
       this.blogService.updatePost(this.postId()!, postData).subscribe({
         next: () => {
           this.loading.set(false);
-          alert('Post updated successfully!');
+          this.snackBar.open('Post updated successfully!', 'Close', {
+            duration: 3000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top'
+          });
           this.router.navigate(['/admin']);
         },
-        error: () => {
+        error: (err) => {
           this.loading.set(false);
-          alert('Error updating post');
+          this.snackBar.open(err.message || 'Error updating post', 'Close', {
+            duration: 5000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top'
+          });
         }
       });
     } else {
       this.blogService.createPost(postData).subscribe({
         next: () => {
           this.loading.set(false);
-          alert('Post created successfully!');
+          this.snackBar.open('Post created successfully!', 'Close', {
+            duration: 3000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top'
+          });
           this.router.navigate(['/admin']);
         },
-        error: () => {
+        error: (err) => {
           this.loading.set(false);
-          alert('Error creating post');
+          this.snackBar.open(err.message || 'Error creating post', 'Close', {
+            duration: 5000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top'
+          });
         }
       });
     }

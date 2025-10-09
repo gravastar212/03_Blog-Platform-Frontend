@@ -24,31 +24,60 @@
     <!-- Spacer -->
     <span class="spacer"></span>
 
-    <!-- Admin Menu -->
-    <button mat-button [matMenuTriggerFor]="adminMenu" class="admin-btn">
-      <mat-icon>admin_panel_settings</mat-icon>
-      <span>Admin</span>
-    </button>
-    <mat-menu #adminMenu="matMenu">
-      @for (item of adminItems; track item.route) {
-        <a mat-menu-item [routerLink]="item.route">
-          <mat-icon>{{ item.icon }}</mat-icon>
-          <span>{{ item.label }}</span>
-        </a>
-      }
-    </mat-menu>
+    <!-- Admin Menu (only if admin or author) -->
+    @if (isAdmin || isAuthor) {
+      <button mat-button [matMenuTriggerFor]="adminMenu" class="admin-btn">
+        <mat-icon>admin_panel_settings</mat-icon>
+        <span>Admin</span>
+      </button>
+      <mat-menu #adminMenu="matMenu">
+        @for (item of adminItems; track item.route) {
+          <a mat-menu-item [routerLink]="item.route">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <span>{{ item.label }}</span>
+          </a>
+        }
+      </mat-menu>
+    }
 
-    <!-- Auth Menu -->
-    <button mat-icon-button [matMenuTriggerFor]="authMenu" class="auth-btn">
-      <mat-icon>account_circle</mat-icon>
-    </button>
-    <mat-menu #authMenu="matMenu">
-      @for (item of authItems; track item.route) {
-        <a mat-menu-item [routerLink]="item.route">
-          <mat-icon>{{ item.icon }}</mat-icon>
-          <span>{{ item.label }}</span>
+    <!-- User Menu (authenticated) -->
+    @if (isAuthenticated) {
+      <button mat-icon-button [matMenuTriggerFor]="userMenu" class="auth-btn">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <div mat-menu-item disabled class="user-info">
+          <div class="user-details">
+            <strong>{{ currentUser?.name }}</strong>
+            <small>{{ currentUser?.email }}</small>
+            <span class="role-badge">{{ currentUser?.role }}</span>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <a mat-menu-item routerLink="/profile">
+          <mat-icon>person</mat-icon>
+          <span>Profile</span>
         </a>
-      }
-    </mat-menu>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
+    }
+
+    <!-- Auth Menu (not authenticated) -->
+    @if (!isAuthenticated) {
+      <button mat-icon-button [matMenuTriggerFor]="authMenu" class="auth-btn">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      <mat-menu #authMenu="matMenu">
+        @for (item of authItems; track item.route) {
+          <a mat-menu-item [routerLink]="item.route">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <span>{{ item.label }}</span>
+          </a>
+        }
+      </mat-menu>
+    }
   </div>
 </mat-toolbar>

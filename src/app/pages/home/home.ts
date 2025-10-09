@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { BlogCard } from '../../components/blog-card/blog-card';
-import { Blog } from '../../services/blog';
+import { BlogHttp } from '../../services/blog-http';
 import { BlogPost } from '../../models/blog-post';
 
 @Component({
@@ -23,7 +23,7 @@ export class Home implements OnInit {
   featuredPosts = signal<BlogPost[]>([]);
   loading = signal(true);
 
-  constructor(private blogService: Blog) {}
+  constructor(private blogService: BlogHttp) {}
 
   ngOnInit() {
     this.loadFeaturedPosts();

@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Blog } from '../../services/blog';
+import { BlogHttp } from '../../services/blog-http';
 import { BlogPost } from '../../models/blog-post';
 
 @Component({
@@ -34,7 +34,7 @@ export class BlogDetail implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private blogService: Blog,
+    private blogService: BlogHttp,
     private sanitizer: DomSanitizer
   ) {}
 
