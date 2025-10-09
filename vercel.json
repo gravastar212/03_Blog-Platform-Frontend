@@ -12,7 +12,7 @@
   ],
   "headers": [
     {
-      "source": "/(.*\\.(js|css|ico|png|jpg|jpeg|svg|woff|woff2|ttf|eot))",
+      "source": "/:path*.(js|css|ico|png|jpg|jpeg|svg|woff|woff2|ttf|eot)",
       "headers": [
         {
           "key": "Cache-Control",
