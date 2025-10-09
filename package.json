@@ -5,13 +5,15 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:blog-platform": "node dist/blog-platform/server/server.mjs",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "e2e": "cypress run",
-    "e2e:open": "cypress open"
+    "e2e:open": "cypress open",
+    "vercel-build": "ng build --configuration production"
   },
   "prettier": {
     "printWidth": 100,
