@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -28,7 +28,7 @@ import { Auth } from '../../services/auth';
   templateUrl: './register.html',
   styleUrl: './register.scss'
 })
-export class Register {
+export class Register implements OnInit {
   name = signal('');
   email = signal('');
   password = signal('');
@@ -43,6 +43,13 @@ export class Register {
     private authService: Auth,
     private snackBar: MatSnackBar
   ) {}
+
+  ngOnInit() {
+    // If user is already authenticated, redirect to home
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/']);
+    }
+  }
 
   onSubmit() {
     if (!this.name() || !this.email() || !this.password() || !this.confirmPassword()) {

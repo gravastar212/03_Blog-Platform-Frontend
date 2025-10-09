@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -28,7 +28,7 @@ import { Auth } from '../../services/auth';
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })
-export class Login {
+export class Login implements OnInit {
   email = signal('');
   password = signal('');
   rememberMe = signal(false);
@@ -41,6 +41,13 @@ export class Login {
     private authService: Auth,
     private snackBar: MatSnackBar
   ) {}
+
+  ngOnInit() {
+    // If user is already authenticated, redirect to home
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/']);
+    }
+  }
 
   onSubmit() {
     if (!this.email() || !this.password()) {
