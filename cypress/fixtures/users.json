@@ -1,0 +1,21 @@
+{
+  "admin": {
+    "email": "admin@blog.com",
+    "password": "admin123",
+    "name": "Admin User",
+    "role": "admin"
+  },
+  "author": {
+    "email": "author@blog.com",
+    "password": "author123",
+    "name": "Sarah Johnson",
+    "role": "author"
+  },
+  "reader": {
+    "email": "reader@blog.com",
+    "password": "reader123",
+    "name": "John Doe",
+    "role": "reader"
+  }
+}
+
