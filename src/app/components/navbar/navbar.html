@@ -1,0 +1,54 @@
+<mat-toolbar color="primary" class="navbar">
+  <div class="navbar-container">
+    <!-- Logo/Brand -->
+    <a routerLink="/" class="logo">
+      <mat-icon>article</mat-icon>
+      <span class="logo-text">Blog Platform</span>
+    </a>
+
+    <!-- Navigation Links -->
+    <nav class="nav-links">
+      @for (item of menuItems; track item.route) {
+        <a 
+          mat-button 
+          [routerLink]="item.route" 
+          routerLinkActive="active-link"
+          [routerLinkActiveOptions]="{exact: true}"
+          class="nav-link">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          {{ item.label }}
+        </a>
+      }
+    </nav>
+
+    <!-- Spacer -->
+    <span class="spacer"></span>
+
+    <!-- Admin Menu -->
+    <button mat-button [matMenuTriggerFor]="adminMenu" class="admin-btn">
+      <mat-icon>admin_panel_settings</mat-icon>
+      <span>Admin</span>
+    </button>
+    <mat-menu #adminMenu="matMenu">
+      @for (item of adminItems; track item.route) {
+        <a mat-menu-item [routerLink]="item.route">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <span>{{ item.label }}</span>
+        </a>
+      }
+    </mat-menu>
+
+    <!-- Auth Menu -->
+    <button mat-icon-button [matMenuTriggerFor]="authMenu" class="auth-btn">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    <mat-menu #authMenu="matMenu">
+      @for (item of authItems; track item.route) {
+        <a mat-menu-item [routerLink]="item.route">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <span>{{ item.label }}</span>
+        </a>
+      }
+    </mat-menu>
+  </div>
+</mat-toolbar>

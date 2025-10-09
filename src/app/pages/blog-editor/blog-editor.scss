@@ -1,0 +1,140 @@
+.blog-editor-page {
+  min-height: 100vh;
+  background-color: var(--mat-sys-surface);
+  padding-bottom: 48px;
+}
+
+.editor-header {
+  background: linear-gradient(135deg, var(--mat-sys-primary) 0%, var(--mat-sys-tertiary) 100%);
+  color: white;
+  padding: 32px 24px;
+  margin-bottom: 32px;
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+
+    h1 {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 32px;
+      font-weight: 500;
+      margin: 0;
+
+      mat-icon {
+        font-size: 36px;
+        width: 36px;
+        height: 36px;
+      }
+    }
+  }
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.editor-card {
+  padding: 32px;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    .full-width {
+      width: 100%;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+
+      mat-form-field {
+        width: 100%;
+      }
+    }
+
+    .tags-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      label {
+        font-weight: 500;
+        font-size: 14px;
+        color: var(--mat-sys-on-surface);
+      }
+
+      mat-chip-grid {
+        border: 1px solid var(--mat-sys-outline);
+        border-radius: 4px;
+        padding: 12px;
+        min-height: 56px;
+
+        input {
+          border: none;
+          outline: none;
+          flex: 1;
+          min-width: 150px;
+          padding: 8px;
+          font-size: 14px;
+        }
+      }
+
+      small {
+        color: var(--mat-sys-on-surface-variant);
+        font-size: 12px;
+      }
+    }
+
+    .featured-toggle {
+      padding: 16px;
+      background-color: var(--mat-sys-surface-container);
+      border-radius: 8px;
+
+      mat-slide-toggle {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        p {
+          margin: 4px 0 0 0;
+          font-size: 13px;
+          color: var(--mat-sys-on-surface-variant);
+          font-weight: normal;
+        }
+      }
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--mat-sys-outline-variant);
+
+      button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 140px;
+        height: 48px;
+
+        @media (max-width: 768px) {
+          flex: 1;
+        }
+      }
+    }
+  }
+}
+
+textarea {
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.6;
+}
+

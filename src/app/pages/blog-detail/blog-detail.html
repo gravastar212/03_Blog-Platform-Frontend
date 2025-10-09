@@ -1,0 +1,110 @@
+<div class="blog-detail-page">
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>Loading post...</p>
+    </div>
+  } @else if (post()) {
+    <div class="container">
+      <!-- Back Button -->
+      <div class="back-nav">
+        <a mat-button routerLink="/blog">
+          <mat-icon>arrow_back</mat-icon>
+          Back to All Posts
+        </a>
+      </div>
+
+      <!-- Post Header -->
+      <article class="post-article">
+        @if (post()!.coverImage) {
+          <div class="cover-image">
+            <img [src]="post()!.coverImage" [alt]="post()!.title">
+          </div>
+        }
+
+        <div class="post-header">
+          <mat-chip class="category-chip">{{ post()!.category }}</mat-chip>
+          <h1>{{ post()!.title }}</h1>
+          
+          <div class="post-meta">
+            <div class="author-info">
+              <div class="author-avatar">
+                @if (post()!.authorAvatar) {
+                  <img [src]="post()!.authorAvatar" [alt]="post()!.author">
+                } @else {
+                  <mat-icon>person</mat-icon>
+                }
+              </div>
+              <div class="author-details">
+                <span class="author-name">{{ post()!.author }}</span>
+                <div class="post-date-info">
+                  <span>{{ post()!.publishedDate | date: 'longDate' }}</span>
+                  <span class="separator">•</span>
+                  <span>{{ post()!.readTime }} min read</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="post-stats">
+              <span class="stat">
+                <mat-icon>visibility</mat-icon>
+                {{ post()!.views }}
+              </span>
+              <span class="stat">
+                <mat-icon>favorite</mat-icon>
+                {{ post()!.likes }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Post Content -->
+        <div class="post-content">
+          <div [innerHTML]="getSafeHtml(post()!.content)"></div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Tags -->
+        <div class="post-tags">
+          <h3>Tags</h3>
+          <div class="tags-list">
+            @for (tag of post()!.tags; track tag) {
+              <mat-chip>{{ tag }}</mat-chip>
+            }
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="post-actions">
+          <button 
+            mat-raised-button 
+            [color]="liked() ? 'accent' : 'primary'"
+            (click)="toggleLike()"
+            [disabled]="liked()">
+            <mat-icon>{{ liked() ? 'favorite' : 'favorite_border' }}</mat-icon>
+            {{ liked() ? 'Liked' : 'Like this post' }}
+          </button>
+
+          <button mat-raised-button (click)="sharePost()">
+            <mat-icon>share</mat-icon>
+            Share
+          </button>
+        </div>
+      </article>
+
+      <!-- Related Posts Section (Placeholder) -->
+      <section class="related-section">
+        <h2>More Posts</h2>
+        <div class="related-actions">
+          <a mat-raised-button color="primary" routerLink="/blog">
+            <mat-icon>grid_view</mat-icon>
+            View All Posts
+          </a>
+        </div>
+      </section>
+    </div>
+  }
+</div>

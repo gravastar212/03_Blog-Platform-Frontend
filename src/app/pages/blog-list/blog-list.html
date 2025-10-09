@@ -1,0 +1,67 @@
+<div class="blog-list-page">
+  <div class="page-header">
+    <div class="container">
+      <h1>All Blog Posts</h1>
+      <p>Explore our collection of articles and tutorials</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Filters Section -->
+    <div class="filters">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search posts</mat-label>
+        <input 
+          matInput 
+          [ngModel]="searchQuery()"
+          (ngModelChange)="onSearchChange($event)"
+          placeholder="Search by title, content, or tags">
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="category-field">
+        <mat-label>Category</mat-label>
+        <mat-select 
+          [ngModel]="selectedCategory()"
+          (ngModelChange)="onCategoryChange($event)">
+          @for (category of categories(); track category) {
+            <mat-option [value]="category">
+              {{ category === 'all' ? 'All Categories' : category }}
+            </mat-option>
+          }
+        </mat-select>
+        <mat-icon matPrefix>filter_list</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <!-- Results Count -->
+    <div class="results-info">
+      <p>
+        Showing {{ filteredPosts().length }} of {{ allPosts().length }} posts
+        @if (selectedCategory() !== 'all') {
+          <span> in {{ selectedCategory() }}</span>
+        }
+      </p>
+    </div>
+
+    <!-- Posts Grid -->
+    @if (loading()) {
+      <div class="loading-container">
+        <mat-spinner></mat-spinner>
+        <p>Loading posts...</p>
+      </div>
+    } @else if (filteredPosts().length > 0) {
+      <div class="posts-grid">
+        @for (post of filteredPosts(); track post.id) {
+          <app-blog-card [post]="post" />
+        }
+      </div>
+    } @else {
+      <div class="empty-state">
+        <mat-icon>search_off</mat-icon>
+        <h3>No posts found</h3>
+        <p>Try adjusting your search or filter criteria</p>
+      </div>
+    }
+  </div>
+</div>

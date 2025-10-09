@@ -1,0 +1,192 @@
+<div class="blog-editor-page">
+  <div class="editor-header">
+    <div class="container">
+      <h1>
+        <mat-icon>{{ isEditMode() ? 'edit' : 'add_circle' }}</mat-icon>
+        {{ isEditMode() ? 'Edit Post' : 'Create New Post' }}
+      </h1>
+    </div>
+  </div>
+
+  <div class="container">
+    <mat-card class="editor-card">
+      <form (ngSubmit)="onSubmit()" #editorForm="ngForm">
+        <!-- Title -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Title *</mat-label>
+          <input 
+            matInput 
+            [ngModel]="title()"
+            (ngModelChange)="title.set($event)"
+            (blur)="generateSlug()"
+            name="title"
+            required
+            placeholder="Enter post title">
+          <mat-icon matPrefix>title</mat-icon>
+        </mat-form-field>
+
+        <!-- Slug -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>URL Slug</mat-label>
+          <input 
+            matInput 
+            [ngModel]="slug()"
+            (ngModelChange)="slug.set($event)"
+            name="slug"
+            placeholder="url-friendly-slug">
+          <mat-icon matPrefix>link</mat-icon>
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            (click)="generateSlug()"
+            matTooltip="Generate from title">
+            <mat-icon>refresh</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <div class="form-row">
+          <!-- Author -->
+          <mat-form-field appearance="outline">
+            <mat-label>Author</mat-label>
+            <input 
+              matInput 
+              [ngModel]="author()"
+              (ngModelChange)="author.set($event)"
+              name="author"
+              placeholder="Author name">
+            <mat-icon matPrefix>person</mat-icon>
+          </mat-form-field>
+
+          <!-- Category -->
+          <mat-form-field appearance="outline">
+            <mat-label>Category *</mat-label>
+            <mat-select 
+              [ngModel]="category()"
+              (ngModelChange)="category.set($event)"
+              name="category"
+              required>
+              @for (cat of categories(); track cat) {
+                <mat-option [value]="cat">{{ cat }}</mat-option>
+              }
+            </mat-select>
+            <mat-icon matPrefix>category</mat-icon>
+          </mat-form-field>
+
+          <!-- Read Time -->
+          <mat-form-field appearance="outline">
+            <mat-label>Read Time (min)</mat-label>
+            <input 
+              matInput 
+              type="number"
+              [ngModel]="readTime()"
+              (ngModelChange)="readTime.set($event)"
+              name="readTime"
+              min="1"
+              placeholder="5">
+            <mat-icon matPrefix>schedule</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <!-- Cover Image URL -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Cover Image URL</mat-label>
+          <input 
+            matInput 
+            [ngModel]="coverImage()"
+            (ngModelChange)="coverImage.set($event)"
+            name="coverImage"
+            placeholder="https://example.com/image.jpg">
+          <mat-icon matPrefix>image</mat-icon>
+        </mat-form-field>
+
+        <!-- Excerpt -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Excerpt *</mat-label>
+          <textarea 
+            matInput 
+            [ngModel]="excerpt()"
+            (ngModelChange)="excerpt.set($event)"
+            name="excerpt"
+            required
+            rows="3"
+            placeholder="Brief description of the post (shown in previews)"></textarea>
+          <mat-icon matPrefix>short_text</mat-icon>
+        </mat-form-field>
+
+        <!-- Content -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Content * (HTML supported)</mat-label>
+          <textarea 
+            matInput 
+            [ngModel]="content()"
+            (ngModelChange)="content.set($event)"
+            name="content"
+            required
+            rows="15"
+            placeholder="Write your post content here. You can use HTML tags."></textarea>
+          <mat-icon matPrefix>article</mat-icon>
+        </mat-form-field>
+
+        <!-- Tags -->
+        <div class="tags-section">
+          <label>Tags</label>
+          <mat-chip-grid #chipGrid>
+            @for (tag of tags(); track tag) {
+              <mat-chip-row (removed)="removeTag(tag)">
+                {{ tag }}
+                <button matChipRemove>
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </mat-chip-row>
+            }
+            <input
+              placeholder="Add tags..."
+              [matChipInputFor]="chipGrid"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              (matChipInputTokenEnd)="addTag($event)">
+          </mat-chip-grid>
+          <small>Press Enter or comma to add tags</small>
+        </div>
+
+        <!-- Featured Toggle -->
+        <div class="featured-toggle">
+          <mat-slide-toggle
+            [ngModel]="featured()"
+            (ngModelChange)="featured.set($event)"
+            name="featured"
+            color="primary">
+            <strong>Featured Post</strong>
+            <p>Show this post in the featured section</p>
+          </mat-slide-toggle>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button 
+            mat-raised-button 
+            type="button"
+            (click)="cancel()">
+            <mat-icon>cancel</mat-icon>
+            Cancel
+          </button>
+
+          <button 
+            mat-raised-button 
+            color="primary" 
+            type="submit"
+            [disabled]="loading()">
+            @if (loading()) {
+              <span>Saving...</span>
+            } @else {
+              <ng-container>
+                <mat-icon>{{ isEditMode() ? 'save' : 'publish' }}</mat-icon>
+                <span>{{ isEditMode() ? 'Update Post' : 'Publish Post' }}</span>
+              </ng-container>
+            }
+          </button>
+        </div>
+      </form>
+    </mat-card>
+  </div>
+</div>
