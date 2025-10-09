@@ -5,15 +5,15 @@
   
   <mat-card-header>
     <div mat-card-avatar class="author-avatar">
-      @if (post().authorAvatar) {
-        <img [src]="post().authorAvatar" [alt]="post().author">
+      @if (authorAvatar) {
+        <img [src]="authorAvatar" [alt]="authorName">
       } @else {
         <mat-icon>person</mat-icon>
       }
     </div>
     <mat-card-title>{{ post().title }}</mat-card-title>
     <mat-card-subtitle>
-      <span class="author">{{ post().author }}</span>
+      <span class="author">{{ authorName }}</span>
       <span class="separator">•</span>
       <span class="date">{{ post().publishedDate | date: 'mediumDate' }}</span>
     </mat-card-subtitle>

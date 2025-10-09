@@ -42,15 +42,19 @@
 
     <!-- User Menu (authenticated) -->
     @if (isAuthenticated) {
-      <button mat-icon-button [matMenuTriggerFor]="userMenu" class="auth-btn">
-        <mat-icon>account_circle</mat-icon>
+      <button mat-button [matMenuTriggerFor]="userMenu" class="user-btn">
+        <span class="role-badge">{{ currentUser?.role }}</span>
+        <img [src]="currentUser?.avatar || 'https://i.pravatar.cc/150?img=1'" 
+             [alt]="currentUser?.name" 
+             class="user-avatar">
+        <span class="username">{{ currentUser?.name }}</span>
+        <mat-icon>arrow_drop_down</mat-icon>
       </button>
       <mat-menu #userMenu="matMenu">
         <div mat-menu-item disabled class="user-info">
           <div class="user-details">
             <strong>{{ currentUser?.name }}</strong>
             <small>{{ currentUser?.email }}</small>
-            <span class="role-badge">{{ currentUser?.role }}</span>
           </div>
         </div>
         <mat-divider></mat-divider>

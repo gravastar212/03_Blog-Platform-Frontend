@@ -42,8 +42,9 @@ export class BlogList implements OnInit {
 
   loadPosts() {
     this.loading.set(true);
-    this.blogService.getAllPosts().subscribe({
+    this.blogService.getAllPosts(1, 100).subscribe({
       next: (posts) => {
+        console.log('Posts loaded from backend:', posts);
         this.allPosts.set(posts);
         this.filteredPosts.set(posts);
         this.loading.set(false);
@@ -51,6 +52,9 @@ export class BlogList implements OnInit {
       error: (error) => {
         console.error('Error loading posts:', error);
         this.loading.set(false);
+        // Set empty arrays on error
+        this.allPosts.set([]);
+        this.filteredPosts.set([]);
       }
     });
   }
@@ -78,7 +82,13 @@ export class BlogList implements OnInit {
 
     // Filter by category
     if (this.selectedCategory() !== 'all') {
-      filtered = filtered.filter(post => post.category === this.selectedCategory());
+      filtered = filtered.filter(post => {
+        // Check if category is an object or string
+        const categoryName = typeof post.category === 'string' 
+          ? post.category 
+          : post.category?.name || '';
+        return categoryName === this.selectedCategory();
+      });
     }
 
     // Filter by search query
@@ -87,7 +97,7 @@ export class BlogList implements OnInit {
       filtered = filtered.filter(post =>
         post.title.toLowerCase().includes(query) ||
         post.excerpt.toLowerCase().includes(query) ||
-        post.tags.some(tag => tag.toLowerCase().includes(query))
+        (post.tags && post.tags.some(tag => tag.toLowerCase().includes(query)))
       );
     }
 

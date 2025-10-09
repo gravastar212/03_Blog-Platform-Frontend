@@ -292,7 +292,9 @@ export class Blog {
 
   // Get all unique categories
   getCategories(): string[] {
-    return [...new Set(this.posts().map(p => p.category))];
+    return [...new Set(this.posts().map(p => {
+      return typeof p.category === 'string' ? p.category : p.category?.name || '';
+    }))];
   }
 
   // Get all unique tags

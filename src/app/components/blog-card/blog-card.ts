@@ -22,4 +22,22 @@ import { BlogPost } from '../../models/blog-post';
 })
 export class BlogCard {
   post = input.required<BlogPost>();
+
+  // Helper methods to handle both string and object types
+  get authorName(): string {
+    const author = this.post().author;
+    return typeof author === 'string' ? author : author?.name || 'Unknown';
+  }
+
+  get authorAvatar(): string | undefined {
+    const post = this.post();
+    const author = post.author;
+    if (post.authorAvatar) return post.authorAvatar;
+    return typeof author === 'object' ? author?.avatar : undefined;
+  }
+
+  get categoryName(): string {
+    const category = this.post().category;
+    return typeof category === 'string' ? category : category?.name || '';
+  }
 }

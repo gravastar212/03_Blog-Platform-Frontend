@@ -46,28 +46,16 @@
         </mat-form-field>
 
         <div class="form-row">
-          <!-- Author -->
-          <mat-form-field appearance="outline">
-            <mat-label>Author</mat-label>
-            <input 
-              matInput 
-              [ngModel]="author()"
-              (ngModelChange)="author.set($event)"
-              name="author"
-              placeholder="Author name">
-            <mat-icon matPrefix>person</mat-icon>
-          </mat-form-field>
-
           <!-- Category -->
           <mat-form-field appearance="outline">
             <mat-label>Category *</mat-label>
             <mat-select 
-              [ngModel]="category()"
-              (ngModelChange)="category.set($event)"
-              name="category"
+              [ngModel]="categoryId()"
+              (ngModelChange)="categoryId.set($event)"
+              name="categoryId"
               required>
-              @for (cat of categories(); track cat) {
-                <mat-option [value]="cat">{{ cat }}</mat-option>
+              @for (cat of categories(); track cat.id) {
+                <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
               }
             </mat-select>
             <mat-icon matPrefix>category</mat-icon>

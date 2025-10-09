@@ -44,13 +44,13 @@ export class BlogEditor implements OnInit {
   excerpt = signal('');
   content = signal('');
   author = signal('Anonymous');
-  category = signal('');
+  categoryId = signal<number | null>(null);
   tags = signal<string[]>([]);
   featured = signal(false);
   readTime = signal(5);
   coverImage = signal('');
 
-  categories = signal<string[]>([]);
+  categories = signal<{ id: number; name: string; slug: string }[]>([]);
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
   constructor(
@@ -61,8 +61,8 @@ export class BlogEditor implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Load categories from backend
-    this.blogService.getCategories().subscribe({
+    // Load categories from backend as objects (with IDs)
+    this.blogService.getCategoryObjects().subscribe({
       next: (cats) => {
         this.categories.set(cats);
       }
@@ -87,8 +87,20 @@ export class BlogEditor implements OnInit {
           this.slug.set(post.slug);
           this.excerpt.set(post.excerpt);
           this.content.set(post.content);
-          this.author.set(post.author);
-          this.category.set(post.category);
+          // Handle author - can be object or string
+          const authorName = typeof post.author === 'string' ? post.author : post.author?.name || '';
+          this.author.set(authorName);
+          // Handle category - can be object or string
+          if (typeof post.category === 'object' && post.category?.id) {
+            this.categoryId.set(post.category.id);
+          } else {
+            // If it's a string, try to find matching category ID
+            const categoryName = typeof post.category === 'string' ? post.category : '';
+            const foundCategory = this.categories().find(c => c.name === categoryName);
+            if (foundCategory) {
+              this.categoryId.set(foundCategory.id);
+            }
+          }
           this.tags.set([...post.tags]);
           this.featured.set(post.featured);
           this.readTime.set(post.readTime);
@@ -124,8 +136,12 @@ export class BlogEditor implements OnInit {
   }
 
   onSubmit() {
-    if (!this.title() || !this.excerpt() || !this.content() || !this.category()) {
-      alert('Please fill in all required fields');
+    if (!this.title() || !this.excerpt() || !this.content() || !this.categoryId()) {
+      this.snackBar.open('Please fill in all required fields', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top'
+      });
       return;
     }
 
@@ -140,15 +156,12 @@ export class BlogEditor implements OnInit {
       slug: this.slug(),
       excerpt: this.excerpt(),
       content: this.content(),
-      author: this.author(),
-      category: this.category(),
+      categoryId: this.categoryId()!,
       tags: this.tags(),
       featured: this.featured(),
       readTime: this.readTime(),
-      coverImage: this.coverImage(),
-      publishedDate: new Date(),
-      likes: 0,
-      views: 0
+      coverImage: this.coverImage() || undefined,
+      published: true
     };
 
     if (this.isEditMode() && this.postId()) {

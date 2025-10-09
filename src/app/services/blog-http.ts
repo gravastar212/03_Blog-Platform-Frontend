@@ -11,6 +11,7 @@ import { Blog } from './blog'; // Import mock service for fallback
 })
 export class BlogHttp {
   private readonly API_URL = `${environment.apiUrl}/posts`;
+  private readonly CATEGORIES_URL = `${environment.apiUrl}/categories`;
   
   // Use mock service when in development mode with mock data
   private useMockService = environment.useMockData;
@@ -40,7 +41,8 @@ export class BlogHttp {
       });
     }
 
-    return this.http.get<BlogPost[]>(this.API_URL, { params }).pipe(
+    return this.http.get<{ data: BlogPost[], total: number }>(this.API_URL, { params }).pipe(
+      map(response => response.data || response as any), // Extract data array from paginated response
       catchError(this.handleError)
     );
   }
@@ -134,9 +136,18 @@ export class BlogHttp {
   /**
    * Create new post (requires authentication)
    */
-  createPost(post: Omit<BlogPost, 'id'>): Observable<BlogPost> {
+  createPost(post: any): Observable<BlogPost> {
     if (this.useMockService) {
-      return this.mockService.createPost(post);
+      // Convert to mock format
+      const mockPost = {
+        ...post,
+        author: post.author || 'Anonymous',
+        category: post.category || 'General',
+        publishedDate: new Date(),
+        likes: 0,
+        views: 0
+      };
+      return this.mockService.createPost(mockPost);
     }
 
     return this.http.post<BlogPost>(this.API_URL, post).pipe(
@@ -147,7 +158,7 @@ export class BlogHttp {
   /**
    * Update existing post (requires authentication)
    */
-  updatePost(id: number, updates: Partial<BlogPost>): Observable<BlogPost | undefined> {
+  updatePost(id: number, updates: any): Observable<BlogPost | undefined> {
     if (this.useMockService) {
       return this.mockService.updatePost(id, updates);
     }
@@ -211,7 +222,32 @@ export class BlogHttp {
       });
     }
 
-    return this.http.get<string[]>(`${this.API_URL}/categories`).pipe(
+    // Get categories from /api/categories endpoint
+    return this.http.get<any[]>(this.CATEGORIES_URL).pipe(
+      map(categories => categories.map(cat => cat.name)),
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Get all category objects (with ID and name)
+   */
+  getCategoryObjects(): Observable<{ id: number; name: string; slug: string }[]> {
+    if (this.useMockService) {
+      // Return mock categories
+      return new Observable(observer => {
+        const categories = [
+          { id: 1, name: 'Frontend', slug: 'frontend' },
+          { id: 2, name: 'Backend', slug: 'backend' },
+          { id: 3, name: 'TypeScript', slug: 'typescript' },
+          { id: 4, name: 'Database', slug: 'database' }
+        ];
+        observer.next(categories);
+        observer.complete();
+      });
+    }
+
+    return this.http.get<{ id: number; name: string; slug: string }[]>(this.CATEGORIES_URL).pipe(
       catchError(this.handleError)
     );
   }

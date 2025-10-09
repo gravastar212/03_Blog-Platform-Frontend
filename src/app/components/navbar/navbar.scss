@@ -110,3 +110,51 @@
   }
 }
 
+.user-btn {
+  color: rgba(255, 255, 255, 0.95) !important;
+  background-color: transparent !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px !important;
+  height: 48px;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+  }
+
+  .role-badge {
+    background-color: rgba(255, 255, 255, 0.25);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+  }
+
+  .username {
+    font-weight: 500;
+    font-size: 14px;
+    display: none;
+
+    @media (min-width: 960px) {
+      display: inline;
+    }
+  }
+
+  mat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+}
+
